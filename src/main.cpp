@@ -3,6 +3,7 @@
 #include <MultiStepper.h>
 #include <Servo.h>
 
+#define IS_TEST
 #define COLOR_SW 6
 #define EN 8
 #define STEPS_PER_REV 200.f
@@ -40,11 +41,11 @@ void goTo(float left, float right) {
 }
 
 void turnLeft() {
-  goTo(160, 0);
+  goTo(170, 0);
 }
 
 void turnRight() {
-  goTo(0, 160);
+  goTo(0, 170);
 }
 
 void runBlue() {
@@ -52,7 +53,7 @@ void runBlue() {
   goTo(1300, 1300); // go up to the ramp
   turnRight();
   goTo(200, 200);
-  goTo(-400, -400);
+  goTo(-408, -408);
   runServo();
 }
 
@@ -61,7 +62,7 @@ void runYellow() {
   goTo(1300, 1300); // go up to the ramp
   turnLeft();
   goTo(200, 200);
-  goTo(-400, -400);
+  goTo(-408, -408);
   runServo();
 }
 
@@ -73,18 +74,24 @@ void setup() {
   // Configure each stepper
   stepper1.setMaxSpeed(600);
   stepper2.setMaxSpeed(600);
-  stepper1.setAcceleration(900);
-  stepper2.setAcceleration(900);
 
   servo.attach(3);
   
   servo.write(90);
 
+  #ifdef IS_TEST
+  delay(2000);
+  #else
   delay(87000);
+  #endif
 
   if (digitalRead(COLOR_SW)) {
+    stepper1.setAcceleration(600);
+    stepper2.setAcceleration(600);
     runYellow();
   } else {
+    stepper1.setAcceleration(900);
+    stepper2.setAcceleration(900);
     runBlue();
   }
 }
